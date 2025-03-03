@@ -5,15 +5,23 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import java.util.List;
-import com.wellsfargo.counselor.entity.Client;
+import com.wellsfargo.counselor.entity.Advisor;
+import com.wellsfargo.counselor.entity.Security;
+
 
 @Entity
-public class Advisor {
+public class Client {
 
     @Id
     @GeneratedValue()
-    private long advisorId;
+    private long clientId;
+
+    @ManyToOne
+    @JoinColumn(name = "advisor_id", nullable = false) // FK to Advisor
+    private Advisor advisor;
+
+    @OneToOne()
+    private Portfolio portfolio;
 
     @Column(nullable = false)
     private String firstName;
@@ -30,23 +38,33 @@ public class Advisor {
     @Column(nullable = false)
     private String email;
 
-    @OneToMany()
-    private List<Client> clients;
-
-    protected Advisor() {
+    protected Client() {
 
     }
 
-    public Advisor(String firstName, String lastName, String address, String phone, String email) {
+    public Client(String firstName, String lastName, String address, String phone, String email, Advisor advisor) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
         this.phone = phone;
         this.email = email;
+        this.advisor = advisor;
     }
 
-    public Long getAdvisorId() {
-        return advisorId;
+    public Advisor getAdvisor() {
+        return this.advisor;
+    }
+
+    public void setAdvisor(Advisor advisor){
+        this.advisor = advisor;
+    }
+
+    public Portfolio getPortfolio() {
+        return this.portfolio;
+    }
+
+    public void setPortfolio(Portfolio portfolio) {
+        this.portfolio = portfolio;
     }
 
     public String getFirstName() {
@@ -87,21 +105,5 @@ public class Advisor {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public List<Client> getClients(){
-        return clients;
-    }
-
-    public void setClients(List<Client> clients){
-        this.clients = clients;
-    }
-
-    public void addClient(Client cl){
-        this.clients.add(cl);
-    }
-
-    public void removeClient(Client cl){
-        this.clients.remove(cl);
     }
 }
